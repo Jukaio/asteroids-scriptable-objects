@@ -314,6 +314,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2970632031999273638, guid: ab39a3d0044af1d46b46c0ccbc24f3dd, type: 3}
+      propertyPath: _rotationPower
+      value: 
+      objectReference: {fileID: 11400000, guid: eb6f17e4493560c4b9750572ccc4f906, type: 2}
+    - target: {fileID: 2970632031999273638, guid: ab39a3d0044af1d46b46c0ccbc24f3dd, type: 3}
       propertyPath: _rotationPowerSimple
       value: 5.85
       objectReference: {fileID: 0}
@@ -361,6 +365,10 @@ PrefabInstance:
     - target: {fileID: 7101966235372498888, guid: c71243f12cdfc2a4282f1805a6098327, type: 3}
       propertyPath: m_Name
       value: UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 7101966235372498890, guid: c71243f12cdfc2a4282f1805a6098327, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7101966235372498892, guid: c71243f12cdfc2a4282f1805a6098327, type: 3}
       propertyPath: m_Pivot.x
