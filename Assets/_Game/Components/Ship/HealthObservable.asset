@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9211020e65c46ccbf7bdab376fceef6, type: 3}
   m_Name: HealthObservable
   m_EditorClassIdentifier: 
-  _value: 10
+  _value: -46
   _onValueChangedEvent: {fileID: 11400000, guid: 1c89cb8edd31962449ecaa94187a07fc, type: 2}

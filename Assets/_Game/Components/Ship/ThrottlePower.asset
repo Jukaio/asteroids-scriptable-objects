@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 395422e491154d9abcceab7c93aaef7d, type: 3}
   m_Name: ThrottlePower
   m_EditorClassIdentifier: 
-  _value: 7
+  _value: 4.63
