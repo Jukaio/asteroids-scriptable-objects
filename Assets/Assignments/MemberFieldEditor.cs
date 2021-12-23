@@ -52,6 +52,7 @@ public class MemberFieldEditor : EditorWindow
 		new GUILayoutOption[] { GUILayout.Width(INTERACTIVE_FIELD_WIDTH) };
 	private static GUILayoutOption[] DOUBLED_INTERACTIVE_FIELD_LAYOUT_OPTIONS =>
 		new GUILayoutOption[] { GUILayout.Width(DOUBLED_INTERACTIVE_FIELD_LAYOUT_WIDTH) };
+
 	private static GUIStyle cachedElementHeaderStyle = null;
 	private static GUIStyle ELEMENT_HEADER_STYLE
 	{
@@ -68,7 +69,6 @@ public class MemberFieldEditor : EditorWindow
 			return cachedElementHeaderStyle;
 		}
 	}
-
 	private static GUIStyle cachedElementEntryTypeLabelStyle = null;
 	private static GUIStyle ELEMENT_ENTRY_TYPE_LABEL_STYLE
 	{
@@ -101,7 +101,6 @@ public class MemberFieldEditor : EditorWindow
 			return cachedElementEntryTypeLabelStyle;
 		}
 	}
-
 	private static GUIStyle cachedFilterMenuTitleStyle = null;
 	private static GUIStyle TOOLBAR_LABEL_TITLE_STYLE
 	{
@@ -116,7 +115,6 @@ public class MemberFieldEditor : EditorWindow
 			return cachedFilterMenuTitleStyle;
 		}
 	}
-
 	private static GUIStyle cachedToolBarButtonStyle = null;
 	private static GUIStyle TOOLBAR_BUTTON_STYLE
 	{
@@ -130,7 +128,6 @@ public class MemberFieldEditor : EditorWindow
 			return cachedToolBarButtonStyle;
 		}
 	}
-
 	private static HashSet<System.Type> cachedLegalValueTypeLookUp = null;
 	private static HashSet<System.Type> LegalValueTypeLookUp
 	{
