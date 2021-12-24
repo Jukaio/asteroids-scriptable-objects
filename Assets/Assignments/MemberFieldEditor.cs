@@ -4,7 +4,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
-using UnityEditorInternal;
 
 // TODO: Availability for more custom types and such (Use Attribute)
 // TODO: Implement Undo/Redo
@@ -14,6 +13,7 @@ using UnityEditorInternal;
 [System.Serializable]
 public class MemberFieldEditor : EditorWindow
 {
+#region CustomizationFields
 	private const string MENU_ITEM_PATH = "Window/Member Field Editor";
 	private const string WINDOW_NAME = "Member Field Editor";
 	private const string ASSET_SCENE_FILTER = "t:Scene";
@@ -139,7 +139,9 @@ public class MemberFieldEditor : EditorWindow
 				cachedLegalValueTypeLookUp.Add(typeof(UnityEngine.Object));
 				cachedLegalValueTypeLookUp.Add(typeof(bool));
 				cachedLegalValueTypeLookUp.Add(typeof(float));
+				cachedLegalValueTypeLookUp.Add(typeof(double));
 				cachedLegalValueTypeLookUp.Add(typeof(int));
+				cachedLegalValueTypeLookUp.Add(typeof(long));
 				cachedLegalValueTypeLookUp.Add(typeof(Vector2));
 				cachedLegalValueTypeLookUp.Add(typeof(Vector3));
 				cachedLegalValueTypeLookUp.Add(typeof(Vector4));
@@ -155,7 +157,9 @@ public class MemberFieldEditor : EditorWindow
 			return cachedLegalValueTypeLookUp;
 		}
 	}
+#endregion
 
+#region ObjectStateBehaviour
 	private void OnEnable()
 	{
 		scenes = FindAllScenesInProject();
@@ -327,25 +331,28 @@ public class MemberFieldEditor : EditorWindow
 	{
 		var isRemoving = GUILayout.Button(CLOSE_BUTTON_TEXT);
 
-		EditorGUILayout.BeginVertical(GUILayout.MaxHeight(position.height * INSPECTOR_AREA_HEIGHT_RATIO));
-		inspectorScroll = DrawScrollArea(inspectorScroll, () =>
-		{
-			activeEditor.OnInspectorGUI();
-			if (isRemoving) {
-				activeEditor = null;
-			}
-		});
-		EditorGUILayout.EndVertical();
+		using var scrollScope = 
+			new EditorGUILayout.ScrollViewScope
+			(
+				inspectorScroll, 
+				GUILayout.Height(position.height * INSPECTOR_AREA_HEIGHT_RATIO)
+			);
+
+		inspectorScroll = scrollScope.scrollPosition;
+
+		activeEditor.OnInspectorGUI();
+		if (isRemoving) {
+			activeEditor = null;
+		}
 	}
 
 	private void DrawComponentSelection()
 	{
-		EditorGUILayout.BeginVertical();
-		mainSectionScroll = DrawScrollArea(mainSectionScroll, () =>
-		{
-			DrawAllElements(this, drawableElements, ref activeEditor);
-		});
-		EditorGUILayout.EndVertical();
+		using var scrollScope =
+			new EditorGUILayout.ScrollViewScope(mainSectionScroll);
+
+		mainSectionScroll = scrollScope.scrollPosition;
+		DrawAllElements(this, drawableElements, ref activeEditor);
 	}
 
 	private bool IsFilterEverything()
@@ -373,10 +380,11 @@ public class MemberFieldEditor : EditorWindow
 
 			return true;
 		}
-
 		return that.ToLower().Contains(filterTerm.ToLower());
 	}
+#endregion
 
+#region StaticFunctionality
 	// --- Static Functions to keep object state mutability as limited as possible --- //
 
 	[MenuItem(MENU_ITEM_PATH)]
@@ -390,17 +398,6 @@ public class MemberFieldEditor : EditorWindow
 	{
 		return LegalValueTypeLookUp.Contains(type);
 	}
-
-	private static Vector2 DrawScrollArea(in Vector2 scroll, System.Action action)
-	{
-		var next = EditorGUILayout.BeginScrollView(scroll);
-
-		action();
-
-		EditorGUILayout.EndScrollView();
-		return next;
-	}
-
 
 	private static Scene[] FindAllScenesInProject()
 	{
@@ -480,17 +477,34 @@ public class MemberFieldEditor : EditorWindow
 		var obj = entry.reflectionObjectWrapper.GetObject();
 		var type = entry.reflectionObjectWrapper.fieldInfo.FieldType;
 
+		/* To kill this absolute monster of an if/else control block...
+		 * No need to - Later on it is possible to inject "priotity" object
+		 * So the user can define custom drawable types - in 99% of the cases not needed */
 		if (typeof(Object).IsAssignableFrom(type)) {
 
 			DrawObjectElement(ref activeEditor, entry, obj);
 		}
-		else if (typeof(float).IsAssignableFrom(type)) { // Should cover doubles, floats
+		else if (typeof(float).Equals(type)) {
 
 			DrawFloatElement(entry);
+		}
+		else if (typeof(double).Equals(type)) {
+
+			DrawGenericElement(entry, boxedValue =>
+			{
+				return EditorGUILayout.DoubleField((double)boxedValue, DOUBLED_INTERACTIVE_FIELD_LAYOUT_OPTIONS);
+			});
 		}
 		else if (typeof(int).Equals(type)) { 
 
 			DrawIntElement(entry);
+		}
+		else if (typeof(long).Equals(type)) {
+
+			DrawGenericElement(entry, boxedValue =>
+			{
+				return EditorGUILayout.LongField((long)boxedValue, DOUBLED_INTERACTIVE_FIELD_LAYOUT_OPTIONS);
+			});
 		}
 		else if (typeof(bool).Equals(type)) {
 
@@ -658,7 +672,7 @@ public class MemberFieldEditor : EditorWindow
 
 		entry.reflectionObjectWrapper.SetObject(
 			EditorGUILayout.ObjectField(obj as Object,
-			entry.reflectionObjectWrapper.fieldInfo.FieldType,
+			entry.reflectionObjectWrapper.fieldInfo.FieldType, true,
 			INTERACTIVE_FIELD_LAYOUT_OPTIONS)
 		);
 		
@@ -815,7 +829,9 @@ public class MemberFieldEditor : EditorWindow
 		}
 		return scriptableEvents;
 	}
+#endregion
 
+#region HelperDataStructures
 	private class CachedEntry
 	{
 		public string formattedFiedType;
@@ -850,7 +866,9 @@ public class MemberFieldEditor : EditorWindow
 			fieldInfo.SetValue(context, newObject);
 		}
 	}
+#endregion
 
+#region ObjectStateData
 	private Editor activeEditor = null;
 	private Scene[] scenes = null;
 	private Vector2 mainSectionScroll = new Vector2(0, 0);
@@ -858,6 +876,6 @@ public class MemberFieldEditor : EditorWindow
 	private List<CachedDrawable> drawableElements = new List<CachedDrawable>();
 	private string filterTerm = string.Empty;
 	private HashSet<System.Type> filteredTypes = new HashSet<System.Type>();
-
+#endregion
 }
 #endif

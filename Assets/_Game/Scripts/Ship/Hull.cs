@@ -1,14 +1,13 @@
 using DefaultNamespace.ScriptableEvents;
 using UnityEngine;
 using Variables;
+using System.Collections.Generic;
 
 namespace Ship
 {
     public class Hull : MonoBehaviour
     {
         //[SerializeField] private IntVariable _health;
-        [SerializeField] private ScriptableEventIntReference _onHealthChangedEvent;
-        [SerializeField] private IntReference _healthRef;
         [SerializeField] private IntObservable _healthObservable;
 
         private void OnCollisionEnter2D(Collision2D other)
