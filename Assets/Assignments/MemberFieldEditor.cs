@@ -5,6 +5,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
+/* NOTE: I willingly chose a more procedural approach rather than a pure OOP approach 
+ * since I treat an EditorWindow/Debugging tool as their own little program and writing a full class
+ * for each little characteristic of the EditorWindow (I.e. the Filter, and certain variations of fields)*/
+
 // TODO: Availability for more custom types and such (Use Attribute)
 // TODO: Implement Undo/Redo
 // TODO: Break down class into smaller bits
